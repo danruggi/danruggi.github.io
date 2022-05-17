@@ -6,7 +6,7 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- Include CSS -->
-	<link rel='stylesheet' href='css/deskyCal.css' onload="this.media='all'"> 
+	<link rel='stylesheet' href='/css/deskyCal.css' onload="this.media='all'"> 
 
 </head>
 
@@ -26,7 +26,7 @@
 </body>
 
 <!-- Include JS -->
-<script type="text/javascript" src="js/deskyCal.js"></script>
+<script type="text/javascript" src="/js/deskyCal.js"></script>
 
 <script type="text/javascript">
 	var selectedDate = new Date();
