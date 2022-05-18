@@ -52,6 +52,7 @@
 }
 .desky-cal-container .left-day {
 	font-size: 4em;
+	line-height: 1em;
 	cursor: pointer;
 }
 .desky-cal-container .left-today {

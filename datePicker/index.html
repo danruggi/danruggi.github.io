@@ -8,7 +8,7 @@
 	<!-- deskyCal Include CSS -->
 	<link rel='stylesheet' href='css/deskyCal.css' onload="this.media='all'">
 
-	<!-- My Personal CSS to show up Demo Page, not needed  -->
+	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
 	<link rel='stylesheet' href='/css/first.css' onload="this.media='all'"> 
 
 </head>
@@ -19,13 +19,114 @@
 		width: 95vw;
 		margin: 0 auto;
 		font-family: "Roboto Condensed";
+		line-height: 1.3em;
+		padding: 1.5em 0;
 	}
-	
+	.code {
+		position: relative;
+		text-align: left;
+		border: 1px solid #aaa;
+		padding: 5px 20px;
+		margin: 20px ;
+		background-color: #fff;
+		color: #666;
+		white-space: nowrap;
+		border-radius: 2px;
+		font-size: 13px;
+		font-family: Consolas,"courier new";
+		/* width: 100%; */
+	}
+	.code .comment {
+		color: #bbb;
+	}
+
+	.code::before {
+		content: "";
+		width: 5px;
+		background-color: green;
+		height: 100%;
+		position: absolute;
+		left: -10px;
+		top: 0;
+	}
 </style>
 <body>
-	<div class="body-container m0a">
-		<h2 class="m0a">Datepicker Demo Page</h2>
-		<input type="text" name="calendar" id="calendar_date_selector1" >
+	<div class="body-container m0a ta-c">
+		<h1 class="ta-c">Datepicker Demo Page</h1>
+		<div class="grid-container grid-2col w80 m0a">
+			<div class="ta-l">
+				<p><b>Click on the input fields downthere to see the examples</b></p>
+				<span>📳 Full Responsive</span><br>
+				<span>🌱 Double / Single Format</span><br>
+				<span>⚙️ Set The Date</span><br>
+				<span>🍀 Add "Any Date" Option</span><br>
+				<span>🔒 Disable Dates</span><br>
+				<span>💡 Relates 2 datepickers for range</span><br>
+				<span>📎 Execute external function on click</span><br>
+			</div>
+			<img src="assets/screen1.png">
+		</div>
+
+		<div class="w50 m0a ta-l">
+			<p><b>Easy usage:</b></p>
+			<p>1. Include CSS and JS</p>
+			<div class="code">
+				&lt;link rel='stylesheet' href='css/deskyCal.css' onload="this.media='all'"&gt;
+				<br>
+				&lt;script type="text/javascript" src="js/deskyCal.js"&gt;&lt;/script&gt;
+			</div>
+			<p>2. Create any field with an unique ID in the page</p>
+			<div class="code">
+				&lt;input id='unique_id'&gt;
+			</div>
+			<p>3. Init the calendar with </p>
+			<div class="code">
+				&lt;script&gt;<br>&emsp;initDeskyCal(ID);<br>&lt;/script&gt;
+			</div>
+		
+		</div>
+
+		<div class="grid-container grid-2col w60 m0a mt2">
+			<div>
+				<h2 class="m0">Example 1: Simple two columns</h2>
+				<p><em>Two column</em>  is default<br> Just call the function passing just the id</p>
+				<div class='code'>
+					<span class="comment">// Just one parameter</span><br>
+					initDeskyCal("calendar_date_selector1");<br>
+					<span class="comment">// Or Passing the "double" it's the same</span><br>
+					initDeskyCal("calendar_date_selector1", "double");
+				</div>
+			</div>
+			<div class="flex-centered h100">
+				<input type="text" name="calendar" id="calendar_date_selector1" >
+			</div>
+			
+			<div>
+				<h2 class="m0">Example 2: One Column</h2>
+				<p><em>Two column</em> is default<br> Just call the function without parameters</p>
+				<code>initDeskyCalendar("calendar_date_selector2", "single");</code>
+			</div>
+			<div class="flex-centered">
+				<input type="text" name="calendar" id="calendar_date_selector2" >
+			</div>
+			
+			<div>
+				<h2 class="m0">Example 3: Simple Execution</h2>
+				<p>Double Format is default<br> Just call the function without parameters</p>
+				<code>initDeskyCal("calendar_date_selector1")</code>
+			</div>
+			<div class="flex-centered">
+				<input type="text" name="calendar" id="calendar_date_selector3" >
+			</div>
+			
+			<div>
+				<h2 class="m0">Example 4: Simple Execution</h2>
+				<p>Double Format is default<br> Just call the function without parameters</p>
+				<code>initDeskyCal("calendar_date_selector1")</code>
+			</div>
+			<div class="flex-centered">
+				<input type="text" name="calendar" id="calendar_date_selector4" >
+			</div>
 		<input type="text" name="calendar" id="calendar_date_selector2" >
 		<input type="text" name="calendar" id="calendar_date_selector3" >
 		<input type="text" name="calendar" id="calendar_date_selector4" >
