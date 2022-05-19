@@ -6,7 +6,8 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- deskyCal Include CSS -->
-	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.7/css/deskyCal.css' onload="this.media='all'">
+	<!-- <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.7/css/deskyCal.css' onload="this.media='all'"> -->
+	<link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'">
 
 	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
 	<link rel='stylesheet' href='/css/first.css' onload="this.media='all'"> 
@@ -38,12 +39,26 @@
 		background-size: 22px;
     	background-position-x: 5px;
 	}
+
+	.hoverable {
+		color: #ccc;
+		transition: 1s all;
+	}
+	.hoverable:hover {
+		color: coral;
+	}
+
 </style>
 
 <body>
 	<div class="body-container m0a ta-c">
 		<h1 class="ta-c">Datepicker Demo Page</h1>
-		<div class="grid-container grid-2col w80 m0a">
+		<div class="flex-centered mb2">
+			<img src="assets/deskycal_presentation_874.webp" class="m0a">
+			<span class="small hoverable mt1">View on <a href="www.deskydoo.com">deskydoo</a> cloud software</span>
+		</div>
+		<div class="grid-container grid-2col w80 m0a" style="margin-top: 5em;">
+			<img src="assets/screen1.png" class="m0a" width="400" height="231">
 			<div class="ta-l">
 				<p><b>Click on the input fields downthere to see the examples</b></p>
 				<span>📳 Full Responsive</span><br>
@@ -56,31 +71,36 @@
 				<span>🤏 Minified version is just <b>6.3K</b></span><br>
 				<span>✌️ Just include 2 files and call many times you need in a page</span><br>
 			</div>
-			<img src="assets/screen1.png">
 		</div>
 
-		<div class="w50 m0a ta-l">
-			<p><b>Easy usage:</b></p>
-			<p>1. Include CSS and JS</p>
-			<div class="code">
-				&lt;link rel='stylesheet' href='<b>https://cdn.jsdelivr.net/gh/danruggi/datepicker/css/deskyCal.css</b>' onload="this.media='all'"&gt;
-				<br>
-				<br>
-				&lt;script type="text/javascript" src="<b>https://cdn.jsdelivr.net/gh/danruggi/datepicker/js/deskyCal.js</b>"&gt;&lt;/script&gt;
+		<div class="grid-container grid-2col w80 m0a">
+			<div class="m0a ta-l">
+				<p><b>Easy usage:</b></p>
+				<p>1. Include CSS and JS</p>
+				<div class="code">
+					&lt;link rel='stylesheet' href='<b>https://cdn.jsdelivr.net/gh/danruggi/datepicker/css/deskyCal.css</b>' onload="this.media='all'"&gt;
+					<br>
+					<br>
+					&lt;script type="text/javascript" src="<b>https://cdn.jsdelivr.net/gh/danruggi/datepicker/js/deskyCal.js</b>"&gt;&lt;/script&gt;
+				</div>
+				<p>2. Create any field with an unique ID in the page</p>
+				<div class="code">
+					&lt;input id='unique_id'&gt;<br><br>
+					<span class="comment">// OR, can also be a button</span><br>
+					&lt;button id='unique_id'&gt;&lt;/button&gt;<br><br>
+					<span class="comment">// OR, can also be an img, OR any element</span><br>
+					&lt;img src='your_img.jpg' id='unique_id'&gt;&lt;/img&gt;
+				</div>
+				<p>3. Init the calendar with </p>
+				<div class="code">
+					&lt;script&gt;<br>&emsp;<b>initDeskyCal(unique_id);</b><br>&lt;/script&gt;
+				</div>
+			
 			</div>
-			<p>2. Create any field with an unique ID in the page</p>
-			<div class="code">
-				&lt;input id='unique_id'&gt;<br><br>
-				<span class="comment">// OR, can also be a button</span><br>
-				&lt;button id='unique_id'&gt;&lt;/button&gt;<br><br>
-				<span class="comment">// OR, can also be an img, OR any element</span><br>
-				&lt;img src='your_img.jpg' id='unique_id'&gt;&lt;/img&gt;
+
+			<div class="flex-centered"> 
+				<img src="assets/screen2.png" class="m0a mt1" width="152" height="175">
 			</div>
-			<p>3. Init the calendar with </p>
-			<div class="code">
-				&lt;script&gt;<br>&emsp;<b>initDeskyCal(unique_id);</b><br>&lt;/script&gt;
-			</div>
-		
 		</div>
 
 		<div class="grid-container grid-2col w60 m0a mt2">
@@ -171,7 +191,7 @@
 				</div>
 			</div>
 			<div class="flex-centered">
-				<div class="grid-container grid-2col">
+				<div class="grid-container grid-2col keep-mobile">
 					<div>
 						<span class="smaller" style="color:#ccc">calendar_date_selector5</span>
 						<input type="text" name="calendar" id="calendar_date_selector5" >
@@ -212,7 +232,7 @@
 				</div>
 			</div>
 			<div class="flex-centered">
-				<div class="grid-container grid-2col">
+				<div class="grid-container grid-2col keep-mobile">
 					<div>
 						<div class="smaller" style="line-height: 10px; color:#ccc">
 							<span>calendar_date_selector9</span><br>
@@ -266,7 +286,7 @@
 				</p>
 				<div class='code'>
 					<span class="comment">//Set a external function on 9th parameter</span>
-					initDeskyCalendar("calendar_date_selector5", null, null, null, call_back_function);
+					initDeskyCalendar("calendar_date_selector12", null, null, null, call_back_function);
 				</div>
 			</div>
 			<div class="flex-centered">
