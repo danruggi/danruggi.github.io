@@ -6,8 +6,8 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- deskyCal Include CSS -->
-	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.8/css/deskyCal.css' onload="this.media='all'">
-	<!-- <link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'"> -->
+	<!-- <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.8/css/deskyCal.css' onload="this.media='all'"> -->
+	<link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'">
 
 	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
 	<link rel='stylesheet' href='/css/first.css' onload="this.media='all'"> 
@@ -92,7 +92,7 @@
 
 	/* ANIMATIONS IMGS */
 	.slide-from-left {
-		animation: 1s slideInLeft cubic-bezier(.86,0,.07,1) 0.1s both;
+		animation: 0.6s slideInLeft cubic-bezier(.86,0,.07,1) 0.1s both;
 	}
 
 	@keyframes slideInLeft {
@@ -102,7 +102,7 @@
 
 
 	.slide-from-right {
-		animation: 1s slideInRight cubic-bezier(.86,0,.07,1) 0.1s both;
+		animation: 0.8s slideInRight cubic-bezier(.86,0,.07,1) 0.1s both;
 	}
 
 	@keyframes slideInRight {
@@ -462,7 +462,7 @@
 				</p>
 				<div class='code'>
 					<span class="comment">//Set a external function on 9th parameter</span>
-					initDeskyCalendar("calendar_date_selector12", null, null, null, call_back_function);
+						initDeskyCalendar("calendar_date_selector12", "double", null, null, null, null, null, null, call_back_function);
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -473,6 +473,80 @@
 		
 		
 	</div>
+
+	<!-- CSS Examples -->
+	<h2 class="m0 mt2">Example CSS - Just change variables and set calendar as you like more</h2>
+	<h5 class="m0">More calendars with different styles can stay all together in the same page</h5>
+	<div class="grid-container grid-3col w90 m0a">
+		<div class="flex-centered">
+			<h3>White and light blue</h3>
+			<style type="text/css">
+				#deskycal_calendar_date_selector13 {
+					--deskycal-main-color: #00bcd4;
+					--deskycal-today-bg-color: #006897;
+					--deskycal-today-right-color: #fff;
+					--deskycal-today-left-hover-color: #03a9f4;
+					--deskycal-base-bg-color: #ffffff;
+					--deskycal-dates-color: #00437c;
+					--deskycal-disabled-dates-color: #d5d5d5;
+					--deskycal-border-width: 5px;
+					--deskycal-border-radius: 18px;
+					--deskycal-border-color: #00bcd4;
+					--deskycal-font-size: 26px;
+					--deskycal-line-height: 30px;
+					--deskycal-width-double: 700px;
+					--deskycal-width-single: 300px;
+				}
+			</style>
+
+			<div class="flex-centered">
+				<div class="smaller" style="color:#ccc"> <span>calendar_date_selector13</span></div>
+				<input type="text" name="calendar" id="calendar_date_selector13" >
+			</div>
+
+			<div class='code'>
+				<span class="comment">/*</span><br>
+				<span class="comment">***White and light blue***</span><br>
+				<span class="comment">You just need to add this code to your page's CSS, changing your ID</span><br>
+				<span class="comment">IE, if you choose ID "calendar_date_selector13"</span><br>
+				<span class="comment">scope vars locally for #deskycal_calendar_date_selector13</span><br>
+				<span class="comment">*/</span><br><br>
+
+				&lt;style&gt;<br>
+				#deskycal_<b>calendar_date_selector13</b> {<br>
+				   --deskycal-main-color: #00bcd4;<br>
+					--deskycal-today-bg-color: #006897;<br>
+					--deskycal-today-right-color: #fff;<br>
+					--deskycal-today-left-hover-color: #03a9f4;<br>
+					--deskycal-base-bg-color: #ffffff;<br>
+					--deskycal-dates-color: #00437c;<br>
+					--deskycal-disabled-dates-color: #d5d5d5;<br>
+					--deskycal-border-width: 5px;<br>
+					--deskycal-border-radius: 18px;<br>
+					--deskycal-border-color: #00bcd4;<br>
+					--deskycal-font-size: 26px;<br>
+					--deskycal-line-height: 30px;<br>
+					--deskycal-width-double: 700px;<br>
+					--deskycal-width-single: 300px;<br>
+				}<br>
+				&lt;/style&gt;<br>
+			</div>
+
+		</div>
+
+		<div class="flex-centered">
+			<!-- <h2>WIP</h2> -->
+		</div>
+
+		<div class="flex-centered">
+			<!-- <h2>WIP</h2> -->
+		</div>
+	</div>
+
+
+
+	<footer style="bottom:0; height:200px; background-color:#ccc; width:100%"> 
+	</footer>
 </body>
 
 <!-- Include JS -->
@@ -535,6 +609,11 @@
 		document.getElementById('calendar_date_selector12_out').innerText=out;
 	}
 
+
+	/// Example 9
+	//// colors
+	initDeskyCalendar("calendar_date_selector13", "double", null, null, null, null, null, null, null);
+	
 
 	//// Scroll Title Move
 	document.addEventListener('scroll', onScroll);
