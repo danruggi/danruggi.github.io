@@ -6,8 +6,8 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- deskyCal Include CSS -->
-	<!-- <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.8/css/deskyCal.css' onload="this.media='all'"> -->
-	<link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'">
+	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v4.0/css/deskyCal.css' onload="this.media='all'">
+	<!-- // <link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'"> -->
 
 	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
 	<link rel='stylesheet' href='/css/first.css' onload="this.media='all'"> 
@@ -51,7 +51,6 @@
 
 	/* ANIMATION TITLE*/
 	.header {
-		/* height: 100vh; */
 		min-height: 100vh;
 	} 
 	.sides {
@@ -75,19 +74,26 @@
 		line-height: 0.7em;
 	}
 	.title h1{
-		/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
 		font-size: 7em;
 		margin: 0 10px;
 	}
 
-	.git-link {
-		animation: firstViewFadeIn 1s ease-out 1s 1  normal forwards;
+	.cal-icon {
+		position: absolute; 
+		top: 30px; 
+		left: 25%; 
+		transform: translateX(-50%);
+		width: 128px;
 	}
-
 
 	@keyframes firstViewChangeGrid {
 		0% {grid-gap: 100vw; }
 		100% {grid-gap: 0; }
+	}
+
+	@keyframes slideInDown {
+		0% {top: -100vh; }
+		100% {top: 13vh; }
 	}
 
 	/* ANIMATIONS IMGS */
@@ -99,7 +105,6 @@
 		0% {transform: translateX(-100vw) }
 		100% {transform: translateX(0%) }
 	}
-
 
 	.slide-from-right {
 		animation: 0.8s slideInRight cubic-bezier(.86,0,.07,1) 0.1s both;
@@ -117,10 +122,17 @@
 			animation: 0.7s firstViewChangeGrid cubic-bezier(.86,0,.07,1) 0.4s both;
 			grid-template-columns: 50vw 50vw;
 		}
+
+		.slideDown {
+			animation: 0.7s slideInDown cubic-bezier(.86,0,.07,1) 1s both;
+		}
+		.cal-icon {
+			width: 256px;
+		}
+
 	}
 	
-
-	@media only screen and (max-width: 2600px) {
+	@media only screen and (min-width: 2801px) {
 
 		.title span {
 			font-size: 3em;
@@ -129,6 +141,20 @@
 			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
 			font-size: 6em;
 		}
+
+		.cal-icon{ width: 256px; }
+	}
+	@media only screen and (max-width: 2800px) {
+
+		.title span {
+			font-size: 3em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 6em;
+		}
+		.cal-icon{ width: 128px; }
+
 	}
 	@media only screen and (max-width: 1850px) {
 		.title span {
@@ -137,6 +163,10 @@
 		.title h1{
 			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
 			font-size: 5em;
+		}
+		@keyframes slideInDown {
+			0% {top: -100vh; }
+			100% {top: 8vh; }
 		}
 	}
 	
@@ -168,6 +198,9 @@
 			width: 70vw;
 			height: auto;
 		}
+		.cal-icon {
+			display: none;
+		}
 	}
 	@media only screen and (max-width: 750px) {
 		.title span {
@@ -193,6 +226,7 @@
 	<div class="body-container m0a ta-c">
 		<div class="header flex-centered">
 			<!-- Main Grid 2 cols-->
+			<img src="assets/calendar.svg"  class="m0a slideDown cal-icon">
 			<div class="sides">
 				<div class="grid-container grid-main">
 					<div class="side title">
@@ -475,8 +509,8 @@
 	</div>
 
 	<!-- CSS Examples -->
-	<h2 class="m0 mt2">Example CSS - Just change variables and set calendar as you like more</h2>
-	<h5 class="m0">More calendars with different styles can stay all together in the same page</h5>
+	<h2 class="m0 mt2">CSS Examples - set vars locally</h2>
+	<h4 class="m0">More calendars with different styles can stay all together in the same page</h4>
 	<div class="grid-container grid-3col w90 m0a">
 		<div class="flex-centered">
 			<h3>White and light blue</h3>
@@ -544,13 +578,14 @@
 	</div>
 
 
-
+<!-- 
 	<footer style="bottom:0; height:200px; background-color:#ccc; width:100%"> 
 	</footer>
+	 -->
 </body>
 
 <!-- Include JS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@v3.8/js/deskyCal.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@v4.0/js/deskyCal.js"></script>
 <!-- <script type="text/javascript" src="jsdev/deskyCal.js"></script> -->
 
 <script type="text/javascript">
