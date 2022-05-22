@@ -17,7 +17,7 @@
 
 <style>
 
-	
+
 	.deskycal {
 		margin: 0 auto;
 	}
@@ -48,28 +48,193 @@
 		color: coral;
 	}
 
+
+	/* ANIMATION TITLE*/
+	.header {
+		/* height: 100vh; */
+		min-height: 100vh;
+	} 
+	.sides {
+		display: flex;
+		justify-content: center;
+		overflow: hidden;	
+	}
+	.grid-main {
+		grid-template-columns: 50vw 50vw;
+	}
+
+	.img-main-right img {
+		max-width: 45vw;
+	}
+
+	.title {
+		color: #0c0d2b;
+	}
+	.title span {
+		font-size: 3em;
+		line-height: 0.7em;
+	}
+	.title h1{
+		/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+		font-size: 7em;
+		margin: 0 10px;
+	}
+
+	.git-link {
+		animation: firstViewFadeIn 1s ease-out 1s 1  normal forwards;
+	}
+
+
+	@keyframes firstViewChangeGrid {
+		0% {grid-gap: 100vw; }
+		100% {grid-gap: 0; }
+	}
+
+	/* ANIMATIONS IMGS */
+	.slide-from-left {
+		animation: 1s slideInLeft cubic-bezier(.86,0,.07,1) 0.1s both;
+	}
+
+	@keyframes slideInLeft {
+		0% {transform: translateX(-100vw) }
+		100% {transform: translateX(0%) }
+	}
+
+
+	.slide-from-right {
+		animation: 1s slideInRight cubic-bezier(.86,0,.07,1) 0.1s both;
+	}
+
+	@keyframes slideInRight {
+		0% {transform: translateX(100vw) }
+		100% {transform: translateX(0%) }
+	}
+
+	/* DIFFERENT SCREENS SIZES */
+
+	@media only screen and (min-width: 1100px) {
+		.grid-main {
+			animation: 0.7s firstViewChangeGrid cubic-bezier(.86,0,.07,1) 0.4s both;
+			grid-template-columns: 50vw 50vw;
+		}
+	}
+	
+
+	@media only screen and (max-width: 2600px) {
+
+		.title span {
+			font-size: 3em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 6em;
+		}
+	}
+	@media only screen and (max-width: 1850px) {
+		.title span {
+			font-size: 2em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 5em;
+		}
+	}
+	
+	@media only screen and (max-width: 1300px) {
+		.title span {
+			font-size: 1.6em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 4em;
+		}
+	}
 	@media only screen and (max-width: 1100px) {
-		.main-img {
+		.title span {
+			font-size: 2em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 5em;
+		}
+		.img-main-right {
 			width: 90vw;
-			margin-top: 4em;
+			/* margin-top: 4em; */
+		}
+		.img-main-right img {
+			max-width: 90vw;
 		}
 		.cal-img {
 			width: 70vw;
 			height: auto;
 		}
 	}
-
+	@media only screen and (max-width: 750px) {
+		.title span {
+			font-size: 1.5em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 3em;
+		}
+	}
+	@media only screen and (max-width: 380px) {
+		.title span {
+			font-size: 1em;
+		}
+		.title h1{
+			/* animation: firstViewGoSmall 2s ease-out 0s 1  normal forwards; */
+			font-size: 2em;
+		}
+	}
 </style>
 
 <body>
 	<div class="body-container m0a ta-c">
-		<h1 class="ta-c">Datepicker Demo Page</h1>
-		<div class="flex-centered mb2">
-			<img src="assets/deskycal_presentation_874.webp" class="m0a main-img">
-			<span class="small hoverable mt1">View on <a href="https://www.deskydoo.com">deskydoo</a> cloud software</span>
+		<div class="header flex-centered">
+			<!-- Main Grid 2 cols-->
+			<div class="sides">
+				<div class="grid-container grid-main">
+					<div class="side title">
+						<div class="flex-centered">
+							<div class="flex-container centered" >
+								<div class="flex-centered">
+									<span class="grape left">Small & <br>flexible</span>
+								</div>
+								<h1 class="ta-c finger">Date picker</h1>
+							</div>
+							<div class="flex-container centered" >
+								<h1 class="ta-c finger">Demo Page</h1>
+								<div class="flex-centered" style="width: min-content">
+									<span class="grape right">with <br>examples</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="side img-main-right">
+						<div class="flex-centered mb2">
+							<img src="assets/deskycal_presentation_896.webp" >
+							<a class="hoverable mt1 smaller" href="https://www.deskydoo.com">Created for deskydoo cloud software</a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="flex-container centered">
+				<div class="flex-centered">
+					<div class="grid-container m0a git-link" style="width: 150px; grid-template-columns: auto auto">
+						<img src="assets/gitico.webp" width="32">
+						<a class="hoverable m0a" href="https://github.com/danruggi/datepicker">GitHub Project page</a>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="grid-container grid-2col w80 m0a" style="margin-top: 5em;">
-			<img src="assets/screen1.png" class="m0a cal-img" width="400" height="231">
+		<div class="grid-container grid-2col w80 m0a" style="margin-top: 3em;">
+			<div class="flex-centered" style="overflow:hidden">
+				<img id="screen1" src="assets/screen1.png" class="m0a cal-img" width="400" height="231">
+			</div>
 			<div class="ta-l">
 				<p><b>Click on the input fields downthere to see the examples</b></p>
 				<span>📳 Full Responsive</span><br>
@@ -109,8 +274,8 @@
 			
 			</div>
 
-			<div class="flex-centered"> 
-				<img src="assets/screen2.png" class="m0a mt1" width="152" height="175">
+			<div class="flex-centered" style="overflow:hidden"> 
+				<img id="screen2" src="assets/screen2.png" class="m0a mt1" width="152" height="175">
 			</div>
 		</div>
 
@@ -370,5 +535,30 @@
 		document.getElementById('calendar_date_selector12_out').innerText=out;
 	}
 
+
+	//// Scroll Title Move
+	document.addEventListener('scroll', onScroll);
+	const spanLeft = document.querySelector('.title span.left');
+	const spanRight = document.querySelector('.title span.right');
+	const screen1 = document.querySelector('#screen1');
+	const screen2 = document.querySelector('#screen2');
+	function onScroll(e) {
+		let windowHeight = window.innerHeight;
+		let v = Math.abs(0.1*window.scrollY);
+		// console.log(v);
+
+		if (v<15) {
+			spanLeft.style.transform = "translateX(-"+v+"px)";
+			spanRight.style.transform = "translateX("+v+"px)";
+		}
+		let topPos1 = screen1.getBoundingClientRect()['top']-windowHeight;
+		if (topPos1 < 0) screen1.classList.add('slide-from-left');
+		console.log(topPos1);
+
+		let topPos2 = screen2.getBoundingClientRect()['top']-windowHeight;
+		if (topPos2 < 0) screen2.classList.add('slide-from-right');
+
+
+	}	
 </script>
 </html>
