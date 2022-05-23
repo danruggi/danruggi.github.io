@@ -6,7 +6,7 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- deskyCal Include CSS -->
-	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v4.0/css/deskyCal.css' onload="this.media='all'">
+	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@latest/css/deskyCal.css' onload="this.media='all'">
 	<!-- // <link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'"> -->
 
 	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
@@ -48,6 +48,9 @@
 		color: coral;
 	}
 
+
+	.css-img-cont {height: 220px; width: 30vw;}
+	.css-img {max-height: 200px; max-width:25vw;  margin: 1rem auto}
 
 	/* ANIMATION TITLE*/
 	.header {
@@ -114,6 +117,16 @@
 		0% {transform: translateX(100vw) }
 		100% {transform: translateX(0%) }
 	}
+
+	.slide-from-bottom {
+		animation: 0.8s slideInBottom cubic-bezier(.86,0,.07,1) 0.1s both;
+	}
+
+	@keyframes slideInBottom {
+		0% {transform: translateY(100vh) }
+		100% {transform: translateY(0%) }
+	}
+
 
 	/* DIFFERENT SCREENS SIZES */
 
@@ -201,6 +214,8 @@
 		.cal-icon {
 			display: none;
 		}
+		.css-img-cont {width: auto; }
+		.css-img {max-width: 85vw;}
 	}
 	@media only screen and (max-width: 750px) {
 		.title span {
@@ -509,11 +524,16 @@
 	</div>
 
 	<!-- CSS Examples -->
-	<h2 class="m0 mt2">CSS Examples - set vars locally</h2>
+	<h1 class="m0 mt2 finger tred" style="font-size:3em">CSS Examples - set vars locally</h1>
 	<h4 class="m0">More calendars with different styles can stay all together in the same page</h4>
-	<div class="grid-container grid-3col w90 m0a">
+	<h4 class="m0" style="color:#999">Just inspect the calendar and change variables as you like, and copy and paste in a &lt;style&gt; tag</h4>
+	<img src="assets/howToEdit.webp" class="css-img"> 
+	<div class="grid-container grid-3col w90 m0a" style="align-items: flex-start;">
 		<div class="flex-centered">
-			<h3>White and light blue</h3>
+			<h3><span style="color:white">White</span> and <span style="color: #00bcd4"> light blue</span></h3>
+			<div class="flex-centered m0a css-img-cont">
+				<img id="screen_blue" src="assets/screenAzul.webp"  class="css-img">
+			</div>
 			<style type="text/css">
 				#deskycal_calendar_date_selector13 {
 					--deskycal-main-color: #00bcd4;
@@ -569,10 +589,114 @@
 		</div>
 
 		<div class="flex-centered">
+			<h3 style="color: #ff21b0">Pink</h3>
+			<div class="flex-centered m0a css-img-cont">
+				<img id="screen_pink" src="assets/screenPink.webp" class="css-img" >
+			</div>
+			<style type="text/css">
+				#deskycal_calendar_date_selector14 {
+					--deskycal-main-color: #8f005c;
+					--deskycal-today-bg-color: #ff21b0;
+					--deskycal-today-right-color: #fff;
+					--deskycal-today-left-hover-color: #8f005c;
+					--deskycal-base-bg-color: #ffffff;
+					--deskycal-dates-color: #ff21b0;
+					--deskycal-disabled-dates-color: #ffb8e6;
+					--deskycal-border-width: 5px;
+					--deskycal-border-radius: 18px;
+					--deskycal-border-color: #ff21b0;
+					--deskycal-font-size: 15px;
+					--deskycal-line-height: 34px;
+					--deskycal-width-double: 700px;
+					--deskycal-width-single: 300px;
+				}
+			</style>
+			<div class="flex-centered">
+				<div class="smaller" style="color:#ccc"> <span>calendar_date_selector14</span></div>
+				<input type="text" name="calendar" id="calendar_date_selector14" >
+			</div>
+
+			<div class='code'>
+				<span class="comment">/*</span><br>
+				<span class="comment">***Pink and white***</span><br>
+				<span class="comment">*/</span><br><br>
+
+				&lt;style&gt;<br>
+				#deskycal_<b>calendar_date_selector14</b> {<br>
+				   --deskycal-main-color: #8f005c;<br>
+					--deskycal-today-bg-color: #ff21b0;<br>
+					--deskycal-today-right-color: #fff;<br>
+					--deskycal-today-left-hover-color: #8f005c;<br>
+					--deskycal-base-bg-color: #ffffff;<br>
+					--deskycal-dates-color: #ff21b0;<br>
+					--deskycal-disabled-dates-color: #ffb8e6;<br>
+					--deskycal-border-width: 5px;<br>
+					--deskycal-border-radius: 18px;<br>
+					--deskycal-border-color: #ff21b0;<br>
+					--deskycal-font-size: 15px;<br>
+					--deskycal-line-height: 34px;<br>
+					--deskycal-width-double: 700px;<br>
+					--deskycal-width-single: 300px;<br>
+				}<br>
+				&lt;/style&gt;<br>
+			</div>
 			<!-- <h2>WIP</h2> -->
 		</div>
 
+		<!-- 15 -->
+		<!-- Green -->
 		<div class="flex-centered">
+			<h3 style="color: lime">Green</h3>
+			<div class="flex-centered m0a css-img-cont">
+				<img id="screen_green" src="assets/screenGreen.webp" class="css-img">
+			</div>
+			<style type="text/css">
+				#deskycal_calendar_date_selector15 {
+					 --deskycal-main-color: #02ff00;
+					--deskycal-today-bg-color: #216c20;
+					--deskycal-today-right-color: #fff;
+					--deskycal-today-left-hover-color: #99ff98;
+					--deskycal-base-bg-color: #000000;
+					--deskycal-dates-color: #bbffbb;
+					--deskycal-disabled-dates-color: #285c27;
+					--deskycal-border-width: 5px;
+					--deskycal-border-radius: 40px;
+					--deskycal-border-color: #02ff00;
+					--deskycal-font-size: 30px;
+					--deskycal-line-height: 42px;
+					--deskycal-width-double: 700px;
+					--deskycal-width-single: 400px;
+				}
+			</style>
+			<div class="flex-centered">
+				<div class="smaller" style="color:#ccc"> <span>calendar_date_selector15</span></div>
+				<input type="text" name="calendar" id="calendar_date_selector15" >
+			</div>
+
+			<div class='code'>
+				<span class="comment">/*</span><br>
+				<span class="comment">***Green***</span><br>
+				<span class="comment">*/</span><br><br>
+
+				&lt;style&gt;<br>
+				#deskycal_<b>calendar_date_selector15</b> {<br>
+				       --deskycal-main-color: #02ff00;<br>
+					    --deskycal-today-bg-color: #216c20;<br>
+					    --deskycal-today-right-color: #fff;<br>
+					    --deskycal-today-left-hover-color: #99ff98;<br>
+					    --deskycal-base-bg-color: #000000;<br>
+					    --deskycal-dates-color: #bbffbb;<br>
+					    --deskycal-disabled-dates-color: #285c27;<br>
+					    --deskycal-border-width: 5px;<br>
+					    --deskycal-border-radius: 40px;<br>
+					    --deskycal-border-color: #02ff00;<br>
+					    --deskycal-font-size: 30px;<br>
+					    --deskycal-line-height: 42px;<br>
+					    --deskycal-width-double: 700px;<br>
+					    --deskycal-width-single: 400px;<br>
+				}<br>
+				&lt;/style&gt;<br>
+			</div>
 			<!-- <h2>WIP</h2> -->
 		</div>
 	</div>
@@ -585,7 +709,7 @@
 </body>
 
 <!-- Include JS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@v4.0/js/deskyCal.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@latest/js/deskyCal.js"></script>
 <!-- <script type="text/javascript" src="jsdev/deskyCal.js"></script> -->
 
 <script type="text/javascript">
@@ -646,9 +770,14 @@
 
 
 	/// Example 9
-	//// colors
+	//// colors blue
 	initDeskyCalendar("calendar_date_selector13", "double", null, null, null, null, null, null, null);
 	
+	//// colors pink
+	initDeskyCalendar("calendar_date_selector14", "double", null, null, null, null, null, null, null);
+	
+	//// colors pink
+	initDeskyCalendar("calendar_date_selector15", "single", null, null, null, null, null, null, null);
 
 	//// Scroll Title Move
 	document.addEventListener('scroll', onScroll);
@@ -656,6 +785,9 @@
 	const spanRight = document.querySelector('.title span.right');
 	const screen1 = document.querySelector('#screen1');
 	const screen2 = document.querySelector('#screen2');
+	const screenBlue = document.querySelector('#screen_blue');
+	const screenPink = document.querySelector('#screen_pink');
+	const screenGreen = document.querySelector('#screen_green');
 	function onScroll(e) {
 		let windowHeight = window.innerHeight;
 		let v = Math.abs(0.1*window.scrollY);
@@ -672,7 +804,14 @@
 		let topPos2 = screen2.getBoundingClientRect()['top']-windowHeight;
 		if (topPos2 < 0) screen2.classList.add('slide-from-right');
 
+		let topPos3 = screenBlue.getBoundingClientRect()['top']-windowHeight;
+		if (topPos3 < 0) screenBlue.classList.add('slide-from-left');
 
+		let topPos4 = screenPink.getBoundingClientRect()['top']-windowHeight;
+		if (topPos4 < 0) screenPink.classList.add('slide-from-bottom');
+
+		let topPos5 = screenGreen.getBoundingClientRect()['top']-windowHeight;
+		if (topPos5 < 0) screenGreen.classList.add('slide-from-right');
 	}	
 </script>
 </html>

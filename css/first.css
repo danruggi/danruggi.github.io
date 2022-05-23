@@ -20,6 +20,7 @@ input { font-family: inherit; line-height: inherit; color: var(--input-color); }
 
 .flex-container {display: flex; }
 .flex-container.centered {justify-content: center;}
+.flex-container.flex-start {justify-content: start;}
 .flex-container.space-around {justify-content: space-around;}
 .flex-container.space-between {justify-content: space-between;}
 .flex-container.flex-col { flex-direction: column;}
