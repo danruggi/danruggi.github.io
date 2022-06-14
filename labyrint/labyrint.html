@@ -1,0 +1,107 @@
+<html>
+<style type="text/css">
+svg {
+  stroke-color: black;
+  /* width: 9rem; */
+  /* height: 9rem; */
+}
+svg path {
+  will-change: auto;
+  stroke-width: 5px;
+  stroke-miterlimit: round;
+  transition: stroke-dashoffset 10s linear;
+}
+</style>
+<body>
+	
+	<div style="width:80%; height:100vh; display: flex; flex-direction:column; justify-content:center">
+		<svg width="210mm" height="297mm" version="1.1" viewBox="0 0 210 297" xmlns="http://www.w3.org/2000/svg">
+			 <g fill="none" stroke="#000000" stroke-width=".26458px">
+			   <path
+		       id="path815"
+		       d="M 21.922619,44.511904 H 173.86905 V 256.93452 H 52.160714 V 117.83928 H 132.29166 V 62.654761 H 96.00595 V 22.589285 H 50.648809 V 95.160713 H 105.07738 V 204.01785 h 49.89286 v 75.59524"
+		       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+		    <path
+		       id="path817"
+		       d="M 5.2916666,207.04167 H 74.083332 v 69.5476 H 130.77976 V 154.88095 H 28.72619 V 74.75 H 74.839284 V 32.416668 H 152.70238 V 143.54167 h -37.04167 v 83.91071 h 71.81548 v -53.67262 h -41.57738"
+		       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+		    
+		    <!-- Meter Path -->
+		    <!-- Needed to add stroke-dashoffset, can find in getTotalLength -->
+		    <path
+		       id="path819" class="meter"
+		       d="M 29.482142,267.51785 V 183.60714 H 80.130951 V 136.73809 H 92.22619 V 240.30357 H 198.81547 V 83.065476 H 84.666666 V 130.69048 H 38.553572 V 32.416668 H 67.27976 v 53.672617 23.434525 h 53.67262 V 73.238094 h 65.0119 v 58.964286 h -44.60119 v 33.2619 H 26.458333"
+		       style=" fill:none; stroke:#a65bae; stroke-width:5px; stroke-linecap:butt; stroke-linejoin:miter; stroke-opacity:1; stroke-dashoffset:1379 "/>
+		    <path
+		       id="path819" class="bg"
+		       d="M 29.482142,267.51785 V 183.60714 H 80.130951 V 136.73809 H 92.22619 V 240.30357 H 198.81547 V 83.065476 H 84.666666 V 130.69048 H 38.553572 V 32.416668 H 67.27976 v 53.672617 23.434525 h 53.67262 V 73.238094 h 65.0119 v 58.964286 h -44.60119 v 33.2619 H 26.458333"
+		       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+		    
+		    <path
+		       id="path821"
+		       d="M 9.8273808,237.27976 H 63.499999 V 196.45833 H 15.875 v -57.45238 h 49.892857 v 38.55357 H 137.58333 V 217.625 h 24.94643 v -63.5 h 25.70238"
+		       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+		    <path
+		       id="path823"
+		       d="M 123.97619,18.809524 V 55.095237 H 83.15476 v 18.142857 h 34.01786 v 55.940476 h 8.31547 v -6.04762 h 16.63096 v -22.67857 h 20.41071 v 43.08929 h 18.89881 v 23.43452 h -27.97024 v 27.97024 H 80.130951 v 34.77381 h 24.946429 v 40.82143 H 46.869048"
+		       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+
+
+			  <!-- <path class="bg" d="m29.482 267.52v-83.911h50.649v-46.869h12.095v103.57h106.59v-157.24h-114.15v47.625h-46.113v-98.274h28.726v77.107h53.673v-36.286h65.012v58.964h-44.601v33.262h-114.9" stroke="#ccc"/>
+			  <path class="meter" d="m29.482 267.52v-83.911h50.649v-46.869h12.095v103.57h106.59v-157.24h-114.15v47.625h-46.113v-98.274h28.726v77.107h53.673v-36.286h65.012v58.964h-44.601v33.262h-114.9" stroke="#09c" fill="none" stroke-dasharray="350" stroke-dashoffset="350"/>
+			  <path d="m9.8274 237.28h53.673v-40.821h-47.625v-57.452h49.893v38.554h71.815v40.065h24.946v-63.5h25.702"/>
+			  <path d="m123.98 18.81v36.286h-40.821v18.143h34.018v55.94h8.3155v-6.0476h16.631v-22.679h20.411v43.089h18.899v23.435h-27.97v27.97h-73.327v34.774h24.946v40.821h-58.208"/> -->
+			 </g>
+			</svg>
+
+	</div>
+</body>
+
+
+<script type="text/javascript">
+	const paths = document.querySelectorAll('.meter');
+	const value=100;
+	function initMeters() {
+		paths.forEach( (path) => {
+			// let value = parseInt(num.dataset.value);
+			let length = path.getTotalLength();
+			console.log	(length);
+			path.style.strokeDasharray = length;
+			path.style.strokeDashoffset = length;  
+		});
+	}
+
+	function animate() {
+		paths.forEach( (path) => {
+			// let value = parseInt(num.dataset.value);
+
+			// Animate progress bar
+			let length = path.getTotalLength();
+			console.log	(length);
+			let to = length * ((100 - value) / 100);
+			// Trigger Layout in Safari hack https://jakearchibald.com/2013/animated-line-drawing-svg/
+			path.getBoundingClientRect();
+			path.style.strokeDashoffset = Math.max(0, to);  
+			// path.style.strokeDashArray = length;
+
+		});
+	}
+
+
+	function reset() {
+		paths.forEach( (path) => {
+			// Get the length of the path
+			let length = path.getTotalLength();
+			path.style.strokeDashoffset = length;
+			// path.style.strokeDashArray = length;
+		});
+	}
+
+	document.querySelector('.svg').addEventListener('mouseover', function(){
+		animate();
+	});
+
+	initMeters()
+	// animate();
+</script>
+</html>
