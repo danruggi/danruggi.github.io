@@ -6,12 +6,17 @@
 	<title>DeskyDoo Calendar Picker</title>
 
 	<!-- deskyCal Include CSS -->
-	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@latest/css/deskyCal.css' onload="this.media='all'">
+	<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/danruggi/datepicker@v5.2/css/deskyCal.css' onload="this.media='all'">
 	<!-- // <link rel='stylesheet' href='cssdev/deskycal.css' onload="this.media='all'"> -->
 
+    <!-- Include JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@v5.2/js/deskyCal.js"></script>
+    <!-- <script type="text/javascript" src="jsdev/deskyCal.js"></script> -->
+
+
 	<!-- My Personal CSS framework to show up Demo Page, not needed  -->
-	<link rel='stylesheet' href='/css/first.css' onload="this.media='all'"> 
-	<link rel='stylesheet' href='/css/github.css' onload="this.media='all'"> 
+	<link rel='stylesheet' href='../css/first.css' onload="this.media='all'">
+	<link rel='stylesheet' href='../css/github.css' onload="this.media='all'">
 
 </head>
 
@@ -312,10 +317,12 @@
 				<div class="code">
 					&lt;input id='myID'&gt;
 				</div>
-				<p>3. Init the calendar with </p>
+				<p>3. Init the calendar passing a json</p>
 				<div class="code">
-					&lt;script&gt;<b>initDeskyCal(myID);</b>&lt;/script&gt;
-				</div>
+                    &lt;script&gt;<br>
+                    new DeskyCalendar({'myID': {}});<br>
+                    &lt;/script&gt;<br>
+                </div>
 			
 			</div>
 
@@ -329,12 +336,10 @@
 			<!-- Example 1 -->
 			<div>
 				<h2 class="m0">Example 1: Two columns</h2>
-				<p><em>Two column</em>  is default<br> Just call the function passing just the id</p>
+				<p><em>Two column</em> <br>Just call the function passing just the id</p>
 				<div class='code'>
 					<span class="comment">// Just one parameter</span><br>
-					initDeskyCal("calendar_date_selector1");<br><br>
-					<span class="comment">// Or Passing the "double" it's the same</span><br>
-					initDeskyCal("calendar_date_selector1", "double");
+					new DeskyCalendar({'calendar_date_selector1': {mode: "double"}})<br><br>
 				</div>
 			</div>
 			<div class="flex-centered h100">
@@ -345,9 +350,9 @@
 			<!-- Example 2 -->
 			<div>
 				<h2 class="m0">Example 2: One Column</h2>
-				<p><em>One column</em> pass <b>single</b> as second parmeter</p>
+				<p><em>One column</em> (default) pass <b>single</b> as second parmeter</p>
 				<div class='code'>
-					initDeskyCalendar("calendar_date_selector2", "single");
+                    new DeskyCalendar({"calendar_date_selector2": {}})
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -362,7 +367,7 @@
 				<div class='code'>
 					<span class="comment">//Create a date</span><br>
 					const d = Date.parse('04 Dec 2025 00:12:00 GMT');<br>
-					initDeskyCalendar("calendar_date_selector3", null, d);
+					new DeskyCalendar({'calendar_date_selector3': {mode: 'double', defaultDate: d1}});
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -380,7 +385,7 @@
 				</p>
 				<div class='code'>
 					<span class="comment">//Set true the 4th parameter</span>
-					initDeskyCalendar("calendar_date_selector4", null, d, true);
+					new DeskyCalendar({'calendar_date_selector4': {anyDate: true}});
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -399,16 +404,31 @@
 					<b>Use the single mode</b>	
 				</p>
 				<div class='code'>
-					<span class="comment">//Set the 5th parameter as the ID of the "other" input</span><br>
-					<span class="comment">//Use the "single" mode</span><br>
-					initDeskyCalendar("calendar_date_selector5", "single", null, null, "calendar_date_selector6");
-					<br><br>
-					initDeskyCalendar("calendar_date_selector6", "single");
-					<br><br>
-					<span class="comment">//Or use in conjuncton with "any date" or other options</span> <br>
-					initDeskyCalendar("calendar_date_selector7", "single", null, true, "calendar_date_selector8");
-					<br><br>
-					initDeskyCalendar("calendar_date_selector8", "single", null, true);
+<pre>
+<span class="comment">//Set the options in the json</span><br>
+options = {
+    <span class="comment">// Use the "single" mode</span>
+    'calendar_date_selector5': {
+        mode: 'single',
+        anyDate: true,
+        nextInput: 'calendar_date_selector6'
+    },
+    'calendar_date_selector6': {
+        mode: 'single',
+        anyDate: true
+    },
+    <span class="comment">// Or the double mode</span>
+    'calendar_date_selector7': {
+        mode: 'single',
+        nextInput: 'calendar_date_selector8'
+    },
+    'calendar_date_selector8': {
+        mode: 'single'
+    }
+}
+new DeskyCalendar(options);
+</pre>
+
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -440,17 +460,30 @@
 					Disable selection before or after a date<br>
 					Using 6th and 7th parameters
 				</p>
-				<div class='code'>
-					<span class="comment">//Create a date</span><br>
-					const d2 = new Date();<br>
-					const d3 = new Date();<br><br>
-					<span class="comment">//just an example, 2 days before and 10 days after</span><br>
-					d2.setTime(d2.getTime()-(2*3600*24*1000));<br>	
-					d3.setTime(d3.getTime()+(10*3600*24*1000));	<br><br>
-					<span class="comment">//Set a date at 6th or 7th parameter</span><br>
-					initDeskyCalendar("calendar_date_selector9", "single", null, null, null, <b>d2</b>);	<br><br>
-					initDeskyCalendar("calendar_date_selector10", "single", null, null, null, <b>d2, d3</b>);<br>	
-				</div>
+                <div class='code'>
+<pre>
+<span class="comment">//Set the options in the json</span><br>
+<span class="comment">//Create a date</span>
+const d2 = new Date();
+const d3 = new Date();
+<span class="comment">//just an example, 2 days before and 10 days after</span>
+d2.setTime(d2.getTime()-(2*3600*24*1000));
+d3.setTime(d3.getTime()+(10*3600*24*1000));
+<span class="comment">// Set a date for disableBefore </span><br>
+options = {
+    <span class="comment">// Use the "single" mode</span>
+    'calendar_date_selector9': {
+        disableBefore: d2,
+    },
+    'calendar_date_selector10': {
+        disableBefore: d2,
+        disableAfter: d3
+    }
+}
+new DeskyCalendar(options);
+</pre>
+
+                </div>
 			</div>
 			<div class="flex-centered">
 				<div class="grid-container grid-2col keep-mobile">
@@ -481,8 +514,13 @@
 					Set 8th parameter as true
 				</p>
 				<div class='code'>
-					<span class="comment">//Set true the 8th parameter</span>
-					initDeskyCalendar("calendar_date_selector11", null, null, null, null, null, null, <b>true</b>);	
+<pre>
+<span class="comment">//Set true the 8th parameter</span>
+options = {
+    "calendar_date_selector11": {scroll: true},
+}
+new DeskyCalendar(options);
+</pre>
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -507,7 +545,7 @@
 				</p>
 				<div class='code'>
 					<span class="comment">//Set a external function on 9th parameter</span>
-						initDeskyCalendar("calendar_date_selector12", "double", null, null, null, null, null, null, call_back_function);
+                    new DeskyCalendar({"calendar_date_selector12": {mode: 'double', callback: this_is_callback}})
 				</div>
 			</div>
 			<div class="flex-centered">
@@ -703,60 +741,138 @@
 	<footer style="bottom:0; height:200px; background-color:#ccc; width:100%"> 
 	</footer>
 	 -->
+
+    <div>
+        <div class="grid-container grid-2col w80 m0a" style="margin-top: 3em;">
+            <!-- Example 7 -->
+            <div>
+                <h2 class="m0">All the code for this page, with all the calendars, looks like</h2>
+                <div class='code'>
+<pre>
+const d1 = new Date(Date.parse('04 Dec 2025 00:12:00 GMT'));
+
+const d2 = new Date();
+const d3 = new Date();
+d2.setTime(d2.getTime()-(2*3600*24*1000));
+d3.setTime(d3.getTime()+(10*3600*24*1000));
+
+const deskyOpts = {
+    /// Call the init Calendar
+    /// Example 1
+    'calendar_date_selector1': {mode: "double"},
+
+    /// Example 2
+    'calendar_date_selector2': {mode: 'single'},
+
+    /// Example 3
+    /// Select date
+    'calendar_date_selector3': {mode: 'double', defaultDate: d1},
+
+
+    /// Example 4
+    //// Any Date
+    'calendar_date_selector4': {anyDate: true},
+
+    /// Example 5
+    //// Next Input
+    'calendar_date_selector5': {mode: 'single', anyDate: true, nextInput: 'calendar_date_selector6'},
+    'calendar_date_selector6': {mode: 'single', anyDate: true},
+    'calendar_date_selector7': {mode: 'single', nextInput: 'calendar_date_selector8'},
+    'calendar_date_selector8': {mode: 'single'},
+
+    /// Example 6
+    //// disable before after date
+    'calendar_date_selector9': {mode: 'single', disableBefore: d2},
+    'calendar_date_selector10': {mode: 'single', disableBefore: d2, disableAfter: d3},
+
+    /// Example 7
+    //// Scroll
+    "calendar_date_selector11": {scroll: true},
+
+    // Call Back
+    "calendar_date_selector12": {mode: 'double', callback: this_is_callback},
+
+    // Colors
+    "calendar_date_selector13": {},
+    "calendar_date_selector14": {},
+    "calendar_date_selector15": {},
+
+};
+
+new DeskyCalendar(deskyOpts);
+</pre>
+                </div>
+            </div>
+            <div class="flex-centered">
+                <div>
+                    <div class="smaller" style="color:#ccc">
+                        <span>calendar_date_selector11</span><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
-<!-- Include JS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/danruggi/datepicker@latest/js/deskyCal.js"></script>
-<!-- <script type="text/javascript" src="jsdev/deskyCal.js"></script> -->
 
 <script type="text/javascript">
 
-	/// Call the init Calendar
-	/// Example 1
-	initDeskyCalendar("calendar_date_selector1");	
+    const d1 = new Date(Date.parse('04 Dec 2025 00:12:00 GMT'));
 
-	/// Example 2
-	initDeskyCalendar("calendar_date_selector2", "single");	
+    const d2 = new Date();
+    const d3 = new Date();
+    d2.setTime(d2.getTime()-(2*3600*24*1000));
+    d3.setTime(d3.getTime()+(10*3600*24*1000));
 
-	/// Example 3 
-	/// Select date
-	const d1 = Date.parse('04 Dec 2025 00:12:00 GMT');
-	initDeskyCalendar("calendar_date_selector3", "double", d1);
+    const deskyOpts = {
+    	/// Call the init Calendar
+    	/// Example 1
+        'calendar_date_selector1': {mode: "double"},
 
-	/// Example 4
-	//// Any Date
-	initDeskyCalendar("calendar_date_selector4", null, null, true);	
+        /// Example 2
+        'calendar_date_selector2': {mode: 'single'},
 
-
-	/// Example 5
-	//// Next Input
-	initDeskyCalendar("calendar_date_selector5", "single", null, null, "calendar_date_selector6");	
-	initDeskyCalendar("calendar_date_selector6", "single");	
-	initDeskyCalendar("calendar_date_selector7", "single", null, true, "calendar_date_selector8");	
-	initDeskyCalendar("calendar_date_selector8", "single", null, true);	
+    	/// Example 3
+    	/// Select date
+        'calendar_date_selector3': {mode: 'double', defaultDate: d1},
 
 
-	/// Example 6
-	//// disable before after date
-	const d2 = new Date();
-	const d3 = new Date();
-	d2.setTime(d2.getTime()-(2*3600*24*1000));	
-	d3.setTime(d3.getTime()+(10*3600*24*1000));	
-	initDeskyCalendar("calendar_date_selector9", "single", null, null, null, d2);	
-	initDeskyCalendar("calendar_date_selector10", "single", null, null, null, d2, d3);	
+    	/// Example 4
+    	//// Any Date
+        'calendar_date_selector4': {anyDate: true},
 
-	/// Example 7
-	//// Scroll
-	initDeskyCalendar("calendar_date_selector11", null, null, null, null, null, null, true);	
+    	/// Example 5
+    	//// Next Input
+        'calendar_date_selector5': {mode: 'single', anyDate: true, nextInput: 'calendar_date_selector6'},
+        'calendar_date_selector6': {mode: 'single', anyDate: true},
+        'calendar_date_selector7': {mode: 'single', nextInput: 'calendar_date_selector8'},
+        'calendar_date_selector8': {mode: 'single'},
+
+    	/// Example 6
+    	//// disable before after date
+        'calendar_date_selector9': {mode: 'single', disableBefore: d2},
+        'calendar_date_selector10': {mode: 'single', disableBefore: d2, disableAfter: d3},
+
+    	/// Example 7
+    	//// Scroll
+    	"calendar_date_selector11": {scroll: true},
+
+        // Call Back
+        "calendar_date_selector12": {mode: 'double', callback: this_is_callback},
+
+        // Colors
+        "calendar_date_selector13": {},
+        "calendar_date_selector14": {},
+        "calendar_date_selector15": {},
+
+    };
+    new DeskyCalendar(deskyOpts);
 
 
-	/// Example 8
-	//// call back
-	initDeskyCalendar("calendar_date_selector12", "double", null, null, null, null, null, null, call_back_function);
-	
-	function call_back_function(d) {
+	function this_is_callback(d) {
 		/// accept the returned date as only argument
 		// calc date difference
+        console.log(`Got called with parameter: ${d}`)
 		let now=new Date();
 		let diff=d.getTime()-now.getTime();
 		let days=Math.round(diff/(3600*24*1000));
@@ -765,16 +881,6 @@
 		document.getElementById('calendar_date_selector12_out').innerText=out;
 	}
 
-
-	/// Example 9
-	//// colors blue
-	initDeskyCalendar("calendar_date_selector13");
-	
-	//// colors pink
-	initDeskyCalendar("calendar_date_selector14");
-	
-	//// colors pink
-	initDeskyCalendar("calendar_date_selector15", "single");
 
 	//// Scroll Title Move
 	document.addEventListener('scroll', onScroll);
