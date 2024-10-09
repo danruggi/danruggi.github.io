@@ -1,415 +1,599 @@
 ////////////////// ***** ////////////////////
-// desky calendar Javascript 
+// desky calendar Javascript
 // by Daniele Rugginenti
-// 2021 08 28 ver. 2.0 rev 1
-// 2021 10 01 ver. 2.5 -- Adding mobile full page support 
-// 2022 05 16 ver. 3.0 -- Make it Independent 
-// 2022 05 16 ver. 3.5 -- Working on github 
+// 2024 10 01 ver. 6.0b  -- Key navigation Support (Beta)
+// 2024 10 01 ver. 5.6   -- Added support for Aria
+// 2024 10 01 ver. 5.5   -- Stable tested version
+// 2024 10 01 ver. 5.2   -- Minor fixes
+// 2024 09 20 ver. 5.0   -- Completely rewritten to accept an option dict and using classes
+// <<<<<>>>>>
+// 2022 07 27 ver. 4.3.1 -- Any input placeholder Any
+// 2022 07 27 ver. 4.3   -- Any input value empty
+// 2022 07 22 ver. 4.2   -- UTC dates
+// 2022 05 16 ver. 3.5   -- Working on github
+// 2022 05 16 ver. 3.0   -- Make it Independent
+// 2021 10 01 ver. 2.5   -- Adding mobile full page support
+// 2021 08 28 ver. 2.0   -- rev 1
 ////////////////////////////////////////////
 
-const deskyOpts = {};
+function adjustCalendarPosition(container) {
+    const { bottom, right } = container.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
 
-function initDeskyCalendarAll() {
-	if (Object.keys(deskyOpts).length == 0) {console.log("Init deskyOpts Object beforer using this function"); return;} 
-	
-	Array.from(Object.keys(deskyOpts)).forEach(function(k){
-		let input = document.getElementById(k);
-		let containerHtml = "<div id='deskycal_container_"+k+"' class='deskycal'></div>";
-		/// This gives a #document, get first child
-		let container = parseHTML(containerHtml);
-		let newParent = container.firstChild;
+    if (right > windowWidth) {
+        container.style.right = '2px';
+    }
 
-		let newInput = input.cloneNode(true);
-		let parent = input.parentNode;
-
-		newParent.appendChild(newInput);
-		parent.replaceChild(newParent, input);
-
-		//set input property and event listener
-		newInput.readOnly = true;
-		newInput.addEventListener('click', function(e){showCalSel(e,this); });
-
-
-		// set input date to show, if not any date. 
-		let curr_month, curr_year;
-		let in_date = deskyOpts[k]['in_date'];
-		if (!deskyOpts[k]['any_date']) {
-			let inDate = new Date();
-			if (in_date > 1000) {
-				// console.log("mills "+mills)
-				inDate.setTime(in_date);
-				curr_month = inDate.getMonth();
-				curr_year = inDate.getFullYear();
-				deskyOpts[k].in_date=inDate.getTime();
-			}
-			
-			// date format just in US format right now 
-			newInput.value = inDate.getFullYear()+"-"+String(parseInt(inDate.getMonth())+1).padStart(2,"0")+"-"+String(inDate.getDate()).padStart(2,'0')
-		} else newInput.value = "Select";
-
-		// Prepare disabled dates, if any. Will be used in draw schema
-		let disDate = new Date();
-		let disabled_before = deskyOpts[k]['disabled_before'];
-		if (disabled_before > 1000) {
-			disDate.setTime(disabled_before);
-			deskyOpts[k].disabled_before=disDate.getTime()+86400000;
-		}
-
-		// init and draw calendars with inDate month and year
-		insertSchema(newParent, k);
-		drawCalSel(newParent, k, curr_year, curr_month);
-	})
+    // Additional positioning logic can go here if needed (e.g., top/bottom adjustments)
 }
 
-function initDeskyCalendar(id, mode = 'double', in_date = null, any_date = false, next_input = null, disabled_before=null, disabled_after=null, scroll=false, callback = null) {
-	let cb;
-	let input = document.getElementById(id);
-	if (input == null) {
-		console.log("[deskyCal] input id "+id+" not found");
-		return;
-	}
+function generateDowList() {
+    const startDate = new Date(2021, 8);  // September 2021
+    let dows = "";
 
-	/// Check Inputs
-	if (mode == null) mode="double";	
-	if (!['double', 'single'].includes(mode)) console.log('[deskyCal] "mode" not valid; "single" or "double" are valid');
-	if (in_date < 0) console.log('[deskyCal] timestamp can\'t be negative');
+    for (let i = 1; i <= 21; i++) {
+        startDate.setDate(i);
+        const dowFull = startDate.toLocaleString('default', { weekday: 'long' });
+        const dowChar = dowFull.charAt(0);
+        if (dows.length !== 0 || startDate.getDay() === 0) {
+            dows += `<span aria-label='${dowFull}'>${dowChar}</span>`;
+        }
+        if (startDate.getDay() === 6 && dows.length !== 0) {
+            break;
+        }
+    }
 
-	/// Create Options Object
-	deskyOpts[id] = {
-		'mode':mode, 
-		'in_date':in_date, 
-		'any_date':any_date, 
-		'next_input':next_input, 
-		'disabled_before':disabled_before, 
-		'disabled_after':disabled_after, 
-		'callback': callback, 
-		'scroll':scroll
-	};
-
-	let containerHtml = "<div id='deskycal_container_"+id+"' class='deskycal'></div>";
-	
-	/// This gives a #document, get first child
-	let container = parseHTML(containerHtml);
-	let newParent = container.firstChild;
-
-	let newInput = input.cloneNode(true);
-	let parent = input.parentNode;
-
-	newParent.appendChild(newInput);
-	parent.replaceChild(newParent, input);
-
-	//set input property and event listener
-	newInput.readOnly = true;
-	newInput.addEventListener('click', function(e){showCalSel(e,this); });
-
-	// set input date to show, if not any date. 
-	let curr_month, curr_year;
-	if (!any_date) {
-		let inDate = new Date();
-		if (in_date > 1000) {
-			// console.log("mills "+mills)
-			inDate.setTime(in_date);
-			curr_month = inDate.getMonth();
-			curr_year = inDate.getFullYear();
-			deskyOpts[id].in_date=inDate.getTime();
-		}
-		
-		// date format just in US format right now 
-		newInput.value = inDate.getFullYear()+"-"+String(parseInt(inDate.getMonth())+1).padStart(2,"0")+"-"+String(inDate.getDate()).padStart(2,'0')
-	} else newInput.value = "Select";
-
-	// Prepare disabled dates, if any. Will be used in draw schema
-	let disDate = new Date();
-	if (disabled_before > 1000) {
-		disDate.setTime(disabled_before);
-		deskyOpts[id].disabled_before=disDate.getTime()+86400000;
-	}
-
-	// init and draw calendars with inDate month and year
-	insertSchema(newParent, id);
-	drawCalSel(newParent, id, curr_year, curr_month);
-
-	return;
+    return dows;
 }
 
-function insertSchema(parent, id) {
-	let el = "";
-	let extraClass= "";
-	if (deskyOpts[id].mode == "single") extraClass = "single";
-	el+= "<div class='desky-dark-container desky-cal-hidden'>";
-	el+= "	<div class='desky-cal-container  "+extraClass+"' id='deskycal_"+id+"'>";
-	// X to close
-	el+= "		<span class='desky-cal-close' onclick='closeCalSel()'>X</span>"; 
-	if (deskyOpts[id].mode == "double") {
-		// Left -- Big Date
-		el+= "		<div class='left' onClick='dayClick(this)'>";
-		el+= "			<span class='left-today'>Today</span> <span class='left-day'></span> <span class='left-mon'></span>";
-		el+= "		</div>";
-	}
-	// Right -- Calendar
-	el+= "		<div class='right'>";
-	// Header
-	el+= "			<div class='desky-cal-right-header arrows'>";
-	el+= "				<span class='desky-arrow' onclick='calSelPrev(this)'><</span>";
-	el+= "				<span class='desky-cal-month-name'></span>";
-	el+= "				<span class='desky-cal-month-num desky-cal-hidden' ></span>";
-	el+= "				<span class='desky-arrow' onclick='calSelNext(this)'>></span>";
-	el+= "			</div>";
-	// Daylist
-	el+= "			<div class='desky-cal-right-bottom'>";
-	el+= "				<div class='desky-cal-dow-list'></div>";
-	el+= "				<div class='desky-cal-day-list'> </div>";
-	el+= "			</div>";
-	// AnyDate
-	if (deskyOpts[id].any_date) {
-		el+="			<span data-day='calsel_anyDate_"+id+"' class='curr-month cal-sel-day' onClick='dayClick(this)'>Any Date</span>";
-	}
-	// Close right
-	el+= "		</div>"; 
-	el+= "	</div>";
-	el+= "</div>";
-	// console.log(el);
+function buildCalendarHTML(id, options) {
+    const mode = options.mode || 'single';
+    const extraClass = mode === 'single' ? 'single' : '';
+    const anyDateOption = options.anyDate ? buildAnyDateHTML(id) : '';
 
-	/// Create the node and append in parent
-	let node = parseHTML(el);
-	parent.appendChild(node);
+    return `
+        <div class='desky-dark-container desky-cal-hidden'>
+            <div class='desky-calendar-container ${extraClass}' id='deskycal_${id}'>
+                <h2 id="Chose Date - for ${id}" class="desky-cal-hidden">Calendar selector for ${id}</h2>
+                <span class='desky-cal-close' id='desky-close-${id}'>X</span>
+                ${mode === 'double' ? buildLeftSectionHTML(id) : ''}
+                <div class='right'>
+                    ${buildRightSectionHTML(id)}
+                    ${anyDateOption}
+                </div>
+            </div>
+        </div>
+        `;
+    }
 
-	// INIT all weekdays in localestring format and set, it creates dows string with spans with S M T W T F S  
-	let tdate = new Date();
-	tdate.setYear(2021);
-	tdate.setMonth(8); 
-	let dows = "";
-	for (let i=1; i<=21; i++) {
-		tdate.setDate(i);
-		if (dows.length != 0) dows += "<span>"+tdate.toLocaleString('default', { weekday: 'long' }).charAt(0)+"</span>";
-		if (tdate.getDay() == 0) dows += "<span>"+tdate.toLocaleString('default', { weekday: 'long' }).charAt(0)+"</span>";
-		if (tdate.getDay() == 6 && dows.length != 0) break;
-		// console.log(i+"--"+dows);
-	}
-	// console.log("dows:"+dows);
-	parent.querySelector('.desky-cal-dow-list').innerHTML = dows;
-
-	// End weekdays
+function buildLeftSectionHTML(id) {
+    return `
+        <div class='left'>
+            <span class='left-today'>Today</span>
+            <span class='left-day'></span>
+            <span class='left-mon'></span>
+        </div>
+    `;
 }
 
-
-function drawCalSel(calParent, inputId, curr_year, curr_month) {
-	// console.log(calParent);
-	
-	// // let inputId = calParent.id.split("_").slice(2).join("_");
-	// console.log(calParent.id);
-	// console.log(inputId);
-	// console.log(curr_month+" "+curr_year);
-	let today = new Date();
-	let tdate = new Date();
-	let out="";
-	let tid = "";
-
-	let monthNameSpan = calParent.querySelector('.desky-cal-month-name');
-	let monthNumSpan = calParent.querySelector('.desky-cal-month-num');
-	let calContainer = calParent.querySelector('.desky-cal-day-list');
-
-	if ( isNaN(curr_year)) curr_year = today.getFullYear();
-	if ( isNaN(curr_month)) curr_month = today.getMonth();
-
-	let first = new Date(curr_year, curr_month, 1);
-	let last = new Date(curr_year, curr_month+1, 0);
-	let dowFirst = first.getDay();	
-	let dowLast = last.getDay();
-
-	let currMonthName = first.toLocaleString('default', { month: 'long' });
-	// first.getFullYear();
-
-	// Left - Day and month - TODAY
-	let tToday = new Date();
-
-	let todayMonthName = tToday.toLocaleString('default', { month: 'long' });
-	let todayTid = "calsel_"+curr_year+"_"+(parseInt(tToday.getMonth())+1)+"_"+tToday.getDate();
-
-	if (deskyOpts[inputId].mode == "double") {
-		calParent.querySelector('.left-day').innerText = today.getDate();
-		calParent.querySelector('.left-mon').innerText = todayMonthName;
-		calParent.querySelector('.left').dataset.day = todayTid;
-	}
-
-	// Right - month name 
-	monthNameSpan.innerText = currMonthName+" "+first.getFullYear();
-	monthNumSpan.innerText = curr_month+"_"+curr_year; //hidden
-
-	let humanCurrMonth=curr_month+1;
-
-	let numFirst = first.getDate();
-	let numLast = last.getDate();
-
-	// console.log("***"+first+"*** ----> "+dowFirst+" month:"+curr_month+" year:"+curr_year);
-	
-
-	//last day of past month
-	let lastLast = new Date(curr_year, curr_month, 0).getDate(); 
-
-	// Past month from last sunday 
-	// that's obtained subtracting last day in the past month with first day of week of current month
-	tdate = new Date();
-	for (let i=lastLast-dowFirst+1; i<=lastLast; i++) {		
-		out += "<span class='last-month cal-sel-day'>"+i+"</span>";
-	}
-
-	// This month
-	tdate = new	Date();
-	tdate.setMonth(curr_month);
-	for (let i=1; i<=numLast; i++) {
-		tdate = new Date(tdate.setDate(i));
-		tid = "calsel_"+curr_year+"_"+humanCurrMonth+"_"+tdate.getDate();
-		let extraClass="";
-		if (todayTid == tid) extraClass="today";
-		/// disabled before
-		if (tdate.getTime() < deskyOpts[inputId].disabled_before) extraClass="disabled";
-		/// disabled after
-		if (tdate.getTime() > deskyOpts[inputId].disabled_after && deskyOpts[inputId].disabled_after != null) extraClass="disabled";
-
-		out += "<span data-day='"+tid+"' class='curr-month cal-sel-day "+extraClass+"' onClick='dayClick(this)'>"+tdate.getDate()+"</span>";
-		// console.log("this: "+tdate);
-	}
-
-	for (let i=1; i<7-dowLast; i++) {
-		tdate = new Date();
-		tdate.setDate(i);
-		tdate.setMonth(curr_month+1);
-		out += "<span class='next-month cal-sel-day'>"+tdate.getDate()+"</span>";
-		// console.log("next:"+tdate+" num:"+numFirst+" i:"+i+" dowLast:"+dowLast);
-	}
-
-	// **Rev1
-	// Adding node should be better then innerHTML
-	let node = parseHTML(out);
-	while (calContainer.firstChild) calContainer.removeChild(calContainer.lastChild);
-	calContainer.appendChild(node);
-	// calContainer.innerHTML = out;
+function buildRightSectionHTML(id) {
+    return `
+        <div class='desky-cal-right-header arrows'>
+            <span class='desky-arrow sel-prev-month'>&lt;</span>
+            <span class='desky-cal-month-name'></span>
+            <span class='desky-cal-month-num desky-cal-hidden'></span>
+            <span class='desky-arrow sel-next-month'>&gt;</span>
+        </div>
+        <div class='desky-cal-right-bottom'>
+            <div class='desky-cal-dow-list'></div>
+            <div class='desky-cal-day-list'></div>
+        </div>
+    `;
 }
 
-function calSelPrev(el) {
-	let calParent = getParentByClass(el, 'desky-cal-container');
-	let currA = calParent.querySelector('.desky-cal-month-num').innerText.split("_");
-	let nmonth = parseInt(currA[0])-1
-	drawCalSel(calParent, calParent.id.split("_").slice(1).join("_"), currA[1], nmonth);
+function buildAnyDateHTML(id) {
+    return `<span data-day='calsel_anyDate_${id}' class='curr-month cal-sel-day any-date-day'>
+                Any Date
+            </span>`;
 }
 
-function calSelNext(el) {
-	let calParent = getParentByClass(el, 'desky-cal-container');
-	let currA = calParent.querySelector('.desky-cal-month-num').innerText.split("_");
-	let nmonth = parseInt(currA[0])+1;
-	drawCalSel(calParent, calParent.id.split("_").slice(1).join("_"), currA[1], nmonth);
+function parseHTML(htmlString) {
+    // Create a template element to hold the HTML
+    const template = document.createElement('template');
+    template.innerHTML = htmlString.trim(); // Trim the string to avoid unwanted text nodes
+    return template.content; // Return the entire content
 }
 
-function dayClick(el) {
-	// console.log(id);
-	if (el.classList.contains('disabled')) return;
-	el.classList.add('clicked');
+class DeskyCalendar {
+    constructor(options) {
+        this.options = options || {};
+        this.calendars = {};
+        this.init();
+    }
 
-	let idA = el.dataset.day.split("_");
-	let parId = getParentByClass(el, 'desky-cal-container').id;
-	let targetId = parId.substring(parId.indexOf("_") + 1);
-	// console.log(target_id);
-	let input = document.getElementById(targetId);
-	let centerDate = new Date();
+    init() {
+        const inputs = Object.keys(this.options);
+        if (inputs.length === 0) {
+            console.error("Initialize deskyOpts before using this function");
+            return;
+        }
+        inputs.forEach(id => this.setupCalendar(id));
+        // console.log(this.options)
 
-	if (idA[1] == "anyDate") {
-		input.value = "Any";
-	} else {
-		centerDate.setYear(idA[1]);
-		centerDate.setMonth(idA[2]-1);
-		centerDate.setDate(idA[3]);
-		// input.value = centerDate;
-		input.value = centerDate.getFullYear()+"-"+String(parseInt(centerDate.getMonth())+1).padStart(2,"0")+"-"+String(parseInt(centerDate.getDate())).padStart(2,'0');
-	}
+    }
 
-	// call callback just if function is defined
-	if (typeof deskyOpts[targetId].callback === 'function') {
-		console.log("call back function");
-		deskyOpts[targetId].callback(centerDate);
-	}
+    createContainer(id) {
+        const oldInput = document.getElementById(id);
+        if (!oldInput) {
+            console.error(`Input id ${id} not found`);
+            return;
+        }
+        const parent = oldInput.parentNode;
 
-	if (deskyOpts[targetId].next_input != null) {
-		/// redraw next input
-		let nextInput = deskyOpts[targetId].next_input;
-		let nextInputParent = document.getElementById('deskycal_container_'+nextInput);
-		let nextInputEl=document.getElementById(nextInput);
+        // Create a new input instance and store it in the calendars object
+        const newInput = oldInput.cloneNode(true);
+        newInput.readOnly = true;
+        newInput.dataset.origId = id;
+        newInput.setAttribute('aria-label', 'Select date');
+        newInput.setAttribute('role', 'button'); // since it acts like a button
+        newInput.addEventListener('click', e => this.calSelShowUp(e, id));
 
-		deskyOpts[nextInput].disabled_before = centerDate.getTime();
-		nextInputEl.value = centerDate.getFullYear()+"-"+String(parseInt(centerDate.getMonth())+1).padStart(2,"0")+"-"+String(parseInt(centerDate.getDate())).padStart(2,'0');
-		drawCalSel(nextInputParent, nextInput, idA[1], idA[2]-1)
-	}
-	let to=300; 
+        // Create a new parent container for this specific input
+        const newParent = document.createElement('div');
+        newParent.id = `desky-added-parent-${id}`;
+        newParent.classList.add('desky-cal-parent', 'deskycal');
+        newParent.dataset.origId = id;
 
-	setTimeout(function(){
-		el.classList.remove("clicked");
-		closeCalSel();
-	},to)
+        newParent.appendChild(newInput);
+        parent.replaceChild(newParent, oldInput); // Replace the original input with the new parent
+
+        // Store references in the calendars object
+        this.calendars[id] = {
+            newInput: newInput,
+            newParent: newParent,
+            calendarWrapper: null, // Initialize as null for later use
+            handleKeyShowUp: null,
+            shownUp: false,
+        };
+        // console.log(this.calendars)
+
+        // Add event listener to close calendar on outside click
+        // Add the keydown event listener for Enter or Spacebar
+        const handleKeyShowUp = (e) => {if (!this.calendars[id].shownUp && (e.key === 'Enter' || e.key === ' ')) {e.preventDefault(); this.calSelShowUp(e, id); } };
+        this.calendars[id].handleKeyShowUp = handleKeyShowUp;
+        newInput.addEventListener('keydown', handleKeyShowUp);
+
+    }
+
+    initializeDate(id) {
+        const options = this.options[id];
+        const defaultDate = options.defaultDate || new Date();
+        this.calendars[id].newInput.value = this.formatDateToLocal(defaultDate);
+        this.calendars[id].centerDate = defaultDate
+
+        const nextInputId = this.options[id].nextInput
+        if (nextInputId) {
+            this.options[nextInputId].disableBefore = defaultDate;
+            this.options[nextInputId].defaultDate = defaultDate;
+        }
+    }
+
+    formatDate(date) {
+        // Not used
+        return date.toISOString().split('T')[0]; // Example of simple date formatting
+    }
+
+    formatDateToLocal(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so add 1
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    insertCalSchema(id) {
+        // console.log(this.calendars[id])
+        // console.log(this.options[id])
+
+        // Build the HTML structure
+        const calendarHTML = buildCalendarHTML(id, this.options[id]);
+        const calendarEL = parseHTML(calendarHTML);
+
+        // Append the new calendar node to the parent element
+        this.calendars[id].newParent.appendChild(calendarEL);
+        this.calendars[id].calendarWrapper = this.calendars[id].newParent.querySelector('.desky-dark-container')
+        this.calendars[id].calendarWrapper.dataset.origId = id
+
+        this.calendars[id].calendarContainer = this.calendars[id].calendarWrapper.querySelector('.desky-calendar-container')
+        this.calendars[id].calendarContainer.dataset.origId = id
+        this.calendars[id].calendarContainer.setAttribute('role', 'dialog');
+        this.calendars[id].calendarContainer.setAttribute('aria-labelledby', `Choose date for id:${id}`);
+
+        // Initialize the days of the week (DOW) list
+        const dowList = generateDowList();
+        const dowListContainer = this.calendars[id].newParent.querySelector('.desky-cal-dow-list');
+        if (dowListContainer) {
+            dowListContainer.innerHTML = dowList;
+        }
+
+        // Add event listener to the close button "X"
+        this.calendars[id].closeButton = this.calendars[id].newParent.querySelector('.desky-cal-close')
+        this.calendars[id].closeButton.dataset.origId = id
+        this.calendars[id].closeButton.setAttribute('aria-label', 'Close calendar');
+        this.calendars[id].closeButton.addEventListener('click', (e) => this.closeCalSel(e, id));
+
+        // Add event listener to next and prev months
+        const nextArrow = this.calendars[id].newParent.querySelector('.sel-next-month')
+        if (nextArrow) {
+            nextArrow.setAttribute('aria-label', 'Next month');
+            nextArrow.addEventListener('click', (e) => this.calSelNextMonth(id))
+        }
+
+        // Add event listener to next and prev months
+        const prevArrow = this.calendars[id].newParent.querySelector('.sel-prev-month')
+        if (prevArrow) {
+            prevArrow.setAttribute('aria-label', 'Previous month');
+            prevArrow.addEventListener('click', (e) => this.calSelPrevMonth(id))
+        }
+
+        const left_date = this.calendars[id].calendarContainer.querySelector('.left')
+        if (left_date) {
+            left_date.addEventListener('click', (e) => this.dayClick(left_date, id))
+        }
+
+        const anyDate = this.calendars[id].calendarContainer.querySelector('.any-date-day')
+        if (anyDate) {
+            anyDate.addEventListener('click', (e) => this.dayClick(anyDate, id))
+        }
+    }
+
+    calSelDrawDays(id, curr_year, curr_month) {
+        let today = new Date();
+        let out = "";
+        let tid = "";
+
+        // console.log(this.calendars[id])
+        // console.log(this.options[id])
+
+        let monthNameSpan = this.calendars[id].calendarContainer.querySelector('.desky-cal-month-name');
+        let monthNumSpan = this.calendars[id].calendarContainer.querySelector('.desky-cal-month-num');
+        let dayListContainer = this.calendars[id].calendarContainer.querySelector('.desky-cal-day-list');
+
+        if (isNaN(curr_year)) curr_year = today.getFullYear();
+        if (isNaN(curr_month)) curr_month = today.getMonth();
+
+        let first = new Date(curr_year, curr_month, 1);
+        let last = new Date(curr_year, curr_month + 1, 0);
+        let dowFirst = first.getDay();
+        let dowLast = last.getDay();
+        // console.log(`${first}, ${last}, ${dowFirst}, ${dowLast}`)
+
+        let currMonthName = first.toLocaleString('default', { month: 'long' });
+        let tToday = new Date();
+
+        let todayMonthName = tToday.toLocaleString('default', { month: 'long' });
+        let todayTid = `calsel_${curr_year}_${tToday.getMonth() + 1}_${tToday.getDate()}`;
+        // console.log(`${currMonthName}, ${tToday}, ${todayMonthName}, ${todayTid}`)
+
+        if (this.options[id].mode === "double") {
+            this.calendars[id].calendarContainer.querySelector('.left-day').innerText = today.getDate();
+            this.calendars[id].calendarContainer.querySelector('.left-mon').innerText = todayMonthName;
+            this.calendars[id].calendarContainer.querySelector('.left').dataset.day = todayTid;
+        }
+
+        // Right - month name
+        monthNameSpan.innerText = `${currMonthName} ${first.getFullYear()}`;
+        monthNumSpan.innerText = `${curr_month}_${curr_year}`; // hidden
+        monthNameSpan.setAttribute('aria-label', `Currently showing ${currMonthName} ${curr_year}`);
+
+
+        let humanCurrMonth = curr_month + 1;
+        let numFirst = first.getDate();
+        let numLast = last.getDate();
+
+
+        // Last day of past month
+        let lastLast = new Date(curr_year, curr_month, 0).getDate();
+        // console.log(`${numFirst}, ${numLast}, ${lastLast}`)
+
+        // Past month from last Sunday
+        for (let i = lastLast - dowFirst + 1; i <= lastLast; i++) {
+            out += `<span class='last-month cal-sel-day aria-disabled='true''>
+                        ${i}
+                    </span>`;
+        }
+        // This month
+        let tdate = new Date();
+        tdate.setMonth(curr_month);
+        for (let i = 1; i <= numLast; i++) {
+            tdate = new Date(tdate.setDate(i));
+            tid = `calsel_${curr_year}_${humanCurrMonth}_${tdate.getDate()}`;
+            let extraClass = "";
+            let extraAttr = ""
+            if (todayTid === tid) extraClass = "today";
+
+            // Disabled before
+            if (this.options[id].disableBefore) {
+                if (tdate.getTime() < this.options[id].disableBefore.getTime()) {extraClass = "disabled"; extraAttr = "aria-disabled='true'"}
+            }
+            // Disabled after
+            if (this.options[id].disableAfter) {
+                if (tdate.getTime() > this.options[id].disableAfter.getTime()) {extraClass = "disabled"; extraAttr = "aria-disabled='true'"}
+            }
+
+            out += `<span data-day='${tid}' class='curr-month cal-sel-day ${extraClass}' role='button' ${extraAttr} aria-label='Select day ${this.formatDateToLocal(tdate)}'>
+                        ${tdate.getDate()}
+                    </span>`;
+        }
+
+        // Next month
+        for (let i = 1; i < 7 - dowLast; i++) {
+            tdate = new Date();
+            tdate.setDate(i);
+            tdate.setMonth(curr_month + 1);
+            out += `<span class='next-month cal-sel-day aria-disabled='true'>
+                        ${tdate.getDate()}
+                    </span>`;
+        }
+
+        // **Rev1
+        // Adding node should be better than innerHTML
+        let node = parseHTML(out);
+        while (dayListContainer.firstChild) {
+            dayListContainer.removeChild(dayListContainer.lastChild);
+        }
+        dayListContainer.appendChild(node);
+        this.addDayClickListeners(dayListContainer, id)
+    }
+
+    // Function to attach event listeners to all .cal-sel-day elements
+    addDayClickListeners(dayListContainer, id) {
+        // Select all .cal-sel-day elements inside dayListContainer
+        const days = dayListContainer.querySelectorAll('.cal-sel-day');
+
+        // Loop through each element and add an event listener
+        days.forEach((day) => {
+            day.addEventListener('click', (e) => this.dayClick(day, id));
+        });
+    }
+
+
+    calSelPrevMonth(id) {
+        let currA = this.calendars[id].calendarContainer.querySelector('.desky-cal-month-num').innerText.split("_");
+        let nmonth = parseInt(currA[0]) - 1;
+        let currYear = parseInt(currA[1]);
+
+        // Adjust year if the month goes below 0 (i.e., January)
+        if (nmonth < 0) {
+            nmonth = 11; // Set to December
+            currYear--; // Decrease the year
+        }
+
+        this.calSelDrawDays(id, currYear, nmonth);
+    }
+
+    calSelNextMonth(id) {
+        let currA = this.calendars[id].calendarContainer.querySelector('.desky-cal-month-num').innerText.split("_");
+        let nmonth = parseInt(currA[0]) + 1;
+        let currYear = parseInt(currA[1]);
+
+        // Adjust year if the month goes above 11 (i.e., December)
+        if (nmonth > 11) {
+            nmonth = 0; // Set to January
+            currYear++; // Increase the year
+        }
+
+        this.calSelDrawDays(id, currYear, nmonth);
+    }
+
+
+    calSelShowUp(e, id) {
+        e.stopPropagation();
+
+        // Toggle visibility of the calendar
+        this.calendars[id].calendarWrapper.classList.toggle('desky-cal-hidden');
+
+        // Scroll the calendar into view if the option is enabled
+        if (this.options[id].scroll) {
+            this.calendars[id].calendarContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Adjust calendar positioning if it goes beyond viewport boundaries
+        adjustCalendarPosition(this.calendars[id].calendarContainer);
+
+        // Draw the calendar for the current month and year
+        let currYear = new Date().getFullYear();
+        let currMonth = new Date().getMonth();
+        if (this.calendars[id].centerDate) {
+            currYear = this.calendars[id].centerDate.getFullYear()
+            currMonth = this.calendars[id].centerDate.getMonth()
+        }
+        this.calSelDrawDays(id, currYear, currMonth);
+
+        this.calendars[id].shownUp = true
+
+        // Add event listener to close calendar on outside click
+        const handleCloseCalSel = (e) => this.closeCalSel(e, id);
+        this.calendars[id].handleCloseCalSel = handleCloseCalSel; // Store the handle
+        document.addEventListener('mouseup', handleCloseCalSel);
+
+        const handleKeyNavigation = (e) => this.handleKeyNavigation(e, id);
+        this.calendars[id].handleKeyNavigation = handleKeyNavigation; // Store the handle
+        document.addEventListener('keydown', handleKeyNavigation);
+    }
+
+
+    dayClick(element, id) {
+        // console.log(id);
+        if (element.classList.contains('disabled')) return;
+        element.classList.add('clicked');
+
+        let idA = element.dataset.day.split("_");
+        let centerDate = new Date();
+
+        if (idA[1] == "anyDate") {
+            console.log("Clicked Anydate")
+            this.calendars[id].newInput.value = "Any Date";
+            this.calendars[id].centerDate = null
+        } else {
+            centerDate.setFullYear(idA[1]);
+            centerDate.setMonth(idA[2]-1);
+            centerDate.setDate(idA[3]);
+            // console.log(`Center Date: ${centerDate}`)
+            this.calendars[id].newInput.value = this.formatDateToLocal(centerDate)
+            this.calendars[id].centerDate = centerDate
+        }
+
+        // call callback just if function is defined
+        if (typeof this.options[id].callback === 'function') {
+            // console.log("Call Back Function");
+            this.options[id].callback(this.calendars[id].centerDate);
+        }
+
+        if (this.options[id].nextInput != null) {
+            this.initializeNextInput(id)
+        }
+        let to=300;
+
+        setTimeout(() => {
+            element.classList.remove("clicked");
+            this.closeCalSel(null, id);
+        }, to);
+    }
+
+    initializeNextInput(id){
+        /// redraw next input
+        let nextInputId = this.options[id].nextInput;
+        const centerDate = this.calendars[id].centerDate
+
+        if (centerDate) {
+            this.options[nextInputId].disableBefore = centerDate;
+            this.calendars[nextInputId].centerDate = centerDate;
+            this.calendars[nextInputId].newInput.value = this.formatDateToLocal(centerDate)
+        } else {
+            this.options[nextInputId].disableBefore = null
+            this.calendars[nextInputId].centerDate = null
+            this.calendars[nextInputId].newInput.value = this.formatDateToLocal(new Date());
+        }
+
+    }
+
+    closeCalSel(event, id) {
+        if (!id) {
+            console.error("Missing id");
+            return;
+        }
+
+        const closeButton = this.calendars[id].closeButton;
+        const shouldClose = event && (
+            (closeButton && closeButton.contains(event.target)) ||
+            !this.calendars[id].calendarWrapper.contains(event.target)
+        );
+
+        if (shouldClose || !event) {
+            this.calendars[id].calendarWrapper.classList.add('desky-cal-hidden');
+            document.removeEventListener('mouseup', this.calendars[id].handleCloseCalSel);  // Use stored handle
+            document.removeEventListener('keydown', this.calendars[id].handleKeyNavigation);
+            this.calendars[id].shownUp = false
+        }
+    }
+
+    // KEY NAVIGATION
+    handleKeyNavigation(event, id) {
+        event.preventDefault()
+
+        const { key } = event;
+        let selectedDay = this.calendars[id].calendarContainer.querySelector('.cal-sel-day.selected');
+
+        // If no day is currently selected, start with today's date or the first day
+        if (!selectedDay) {
+            selectedDay = this.calendars[id].calendarContainer.querySelector('.cal-sel-day.today') ||
+                          this.calendars[id].calendarContainer.querySelector('.curr-month.cal-sel-day');
+            selectedDay.classList.add('selected');
+        }
+        // console.log(selectedDay)
+
+        let selectedDate = new Date(parseInt(selectedDay.dataset.day.split('_')[1]), parseInt(selectedDay.dataset.day.split('_')[2]) - 1, parseInt(selectedDay.dataset.day.split('_')[3]));
+        // console.log(currentDate)
+
+        switch (key) {
+            case 'Escape':
+                this.closeCalSel(null, id);
+                return
+            case 'ArrowRight':  // Move to the next day
+                selectedDate.setDate(selectedDate.getDate() + 1);
+                break;
+            case 'ArrowLeft':   // Move to the previous day
+                selectedDate.setDate(selectedDate.getDate() - 1);
+                break;
+            case 'ArrowDown':   // Move to AnyDate
+                if (!this.options[id].anyDate) {
+                    return
+                }
+                this.calendars[id].selectedDate = selectedDate
+                this.selectNewDay(id, null); // cut down the execution and go to anyDate, setting newDate at null
+                return;
+            case 'ArrowUp':
+                if (!this.options[id].anyDate) {
+                    return
+                }
+                selectedDate = this.calendars[id].selectedDate
+                break;
+            case 'PageUp':      // Move to the previous month
+                this.calSelNextMonth(id);
+                return;
+            case 'PageDown':    // Move to the next month
+                this.calSelPrevMonth(id);
+                return;
+            case "Enter":
+                this.dayClick(selectedDay, id)
+            default:
+                return;  // Ignore other keys
+        }
+
+        // Update calendar view if the month has changed
+        if (selectedDate.getMonth() !== parseInt(selectedDay.dataset.day.split('_')[2]) - 1) {
+            this.calSelDrawDays(id, selectedDate.getFullYear(), selectedDate.getMonth());
+        }
+
+        // Select the new day
+        this.selectNewDay(id, selectedDate);
+    }
+
+    selectNewDay(id, newDate) {
+        // Deselect the previously selected day
+        const prevSelectedDay = this.calendars[id].calendarContainer.querySelector('.curr-month.selected');
+        if (prevSelectedDay) {
+            prevSelectedDay.classList.remove('selected');
+        }
+
+        let newDayElement = null; // Declare newDayElement outside the conditionals
+
+        // Handle anyDate option if enabled and newDate is not provided
+        if (!newDate) {
+            newDayElement = this.calendars[id].calendarContainer.querySelector('.curr-month.any-date-day');
+        } else {
+            newDayElement = this.calendars[id].calendarContainer.querySelector(
+                `[data-day='calsel_${newDate.getFullYear()}_${newDate.getMonth() + 1}_${newDate.getDate()}']`
+            );
+        }
+
+        // console.log(newDayElement)
+        // Add selected class to the new day (if the newDayElement exists)
+        if (newDayElement) {
+            newDayElement.classList.add('selected');
+        }
+    }
+
+    setupCalendar(id) {
+        // Setup each calendar
+        // if (!deskyOpts || !deskyOpts[id]) {
+        //     console.error('Invalid desky options for id:', id);
+        //     return;
+        // }
+        this.createContainer(id);
+        this.initializeDate(id);
+        this.insertCalSchema(id);
+    }
 }
 
-function showCalSel(e, el){
-	e.stopPropagation();
-	// closeCalSel();
-	// console.log(el);
-	let par = el.parentNode;
-	let cls = par.querySelector('.desky-dark-container');
-	// let cls = document.getElementById('cal_'+el.id);
-	// let par = getParentByClass(cls, 'date-selector');
-	
-	cls.classList.toggle('desky-cal-hidden');
-
-	if (deskyOpts[el.id].scroll) cls.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	
-	///if calendar goes out of borders, position against border
-	let con = par.querySelector('.desky-cal-container');
-	let bottomPos = con.getBoundingClientRect()['bottom'];
-	let rightPos = con.getBoundingClientRect()['right'];
-	let windowHeight = window.innerHeight;
-	let windowWidth = window.innerWidth;
-	// console.log(rightPos+" "+windowWidth);
-	if (rightPos > windowWidth) {
-		con.style.right = "2px";
-		// cls.style.left = "auto"
-	}
-
-	document.addEventListener('mouseup',deskyCalSelEvent)
-	return;
-}
-
-function closeCalSel(){
-	document.querySelectorAll('.desky-dark-container').forEach(function(el){
-		if (!el.classList.contains('desky-cal-hidden')) {
-			el.classList.add('desky-cal-hidden');
-			return;
-		}
-	});
-	document.removeEventListener('mouseup',deskyCalSelEvent);
-}
-
-function deskyCalSelEvent(e) {
-	document.querySelectorAll('.deskycal').forEach(function(el){
-		let cls = el.querySelector('.desky-dark-container');
-		if (cls == null) return;
-		if (!cls.classList.contains('desky-cal-hidden')) {
-			if (!cls.contains(e.target)) closeCalSel();
-		}
-	});
-}
-
-function getParentByClass(el, className, maxDepth=10) {
-	let i=0;
-	while (!el.classList.contains(className)) {
-		el=el.parentElement;
-		i++;
-		if (i>maxDepth) return false;
-	}
-  	return el;
-}
-
-function parseHTML(html) {
-	// It creates a node, and not need to reload the dom with innerHTML, but can use appendChild instead.
-	// Added at middle project, maybe everything could be faster js side.
-	var t = document.createElement('template');
-	t.innerHTML = html;
-	return t.content;
-}
